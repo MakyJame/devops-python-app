@@ -1,0 +1,31 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /root/app
+
+            git pull origin main
+
+            docker stop devops-app || true
+            docker rm devops-app || true
+
+            docker build -t devops-app .
+            docker run -d -p 3000:3000 --name devops-app devops-app

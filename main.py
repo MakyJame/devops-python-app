@@ -4,6 +4,6 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     return {
-        "message": "Hello Minh user",
-        "version": "1"
+        "message": "Hello Minh user v2",
+        "version": "2"
         }
